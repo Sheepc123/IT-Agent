@@ -1,0 +1,14 @@
+{
+  "source_name": "fx-a-catalog",
+  "models": [
+    {"manufacturer": "SIM", "model_code": "SIM-NB-DEV", "category": "LAPTOP"}
+  ],
+  "skus": [
+    {
+      "sku_code": "SIM-NB-DEV-32-1T",
+      "model_code": "SIM-NB-DEV",
+      "hardware_revision": "A",
+      "specs": {"schema_version": 1, "memory_gib": 32, "storage_bytes": 1000000000000, "storage_original": "1 TB"}
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "departments": ["RD1", "RD2"],
+  "principals": [
+    {"key": "U-REQ-01", "kind": "USER", "department": "RD1", "grants": [["REQUESTER", "DEPT:RD1"]]},
+    {"key": "U-REQ-02", "kind": "USER", "department": "RD2", "grants": [["REQUESTER", "DEPT:RD2"]]},
+    {"key": "U-ITAM-01", "kind": "USER", "department": "RD1", "grants": [["IT_ASSET_ADMIN", "DEPT:RD1"]]},
+    {"key": "U-BUY-01", "kind": "USER", "department": null, "grants": [["BUYER", "DEPT:RD1"]]},
+    {"key": "U-BUY-02", "kind": "USER", "department": null, "grants": [["BUYER", "DEPT:RD2"]]},
+    {"key": "U-TECH-01", "kind": "USER", "department": null, "grants": [["TECH_REVIEWER", "ORG"]]},
+    {"key": "U-TECH-02", "kind": "USER", "department": null, "grants": [["TECH_REVIEWER", "ORG"]]},
+    {"key": "U-APR-01", "kind": "USER", "department": null, "grants": [["PROCUREMENT_APPROVER", "ORG"]]},
+    {"key": "U-DUAL-01", "kind": "USER", "department": null, "grants": [["BUYER", "DEPT:RD1"], ["PROCUREMENT_APPROVER", "ORG"]]},
+    {"key": "U-AUD-01", "kind": "USER", "department": null, "grants": [["AUDITOR", "ORG"]]},
+    {"key": "SVC-WF", "kind": "SERVICE", "department": null, "grants": []},
+    {"key": "SVC-IMPORT", "kind": "SERVICE", "department": null, "grants": []}
+  ]
+}

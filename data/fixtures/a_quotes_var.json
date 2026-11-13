@@ -1,0 +1,55 @@
+{
+  "source_name": "fx-a-quotes-var",
+  "suppliers": [
+    {"code": "SUP-E", "name": "模拟供应商 E"},
+    {"code": "SUP-F", "name": "模拟供应商 F"},
+    {"code": "SUP-G", "name": "模拟供应商 G"},
+    {"code": "SUP-H", "name": "模拟供应商 H"},
+    {"code": "SUP-I", "name": "模拟供应商 I"},
+    {"code": "SUP-J", "name": "模拟供应商 J"}
+  ],
+  "quotes": [
+    {
+      "quote_key": "Q-D", "supplier": "SUP-E", "channel_name": "模拟店铺 E",
+      "currency": "CNY", "price_basis": "TAX_INCLUDED_DELIVERED", "shipping_minor": 50000,
+      "valid_from": "2026-11-15T00:00:00+08:00", "valid_until": "2026-12-15T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": 700000, "tax_included": true, "available_quantity": 20}]
+    },
+    {
+      "quote_key": "Q-E", "supplier": "SUP-F", "channel_name": "模拟店铺 F",
+      "currency": "USD", "price_basis": "LIST_PRICE_NO_CONVERSION", "shipping_minor": null,
+      "valid_from": "2026-11-01T00:00:00+08:00", "valid_until": "2026-11-20T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": 100000, "tax_included": false, "available_quantity": 20}]
+    },
+    {
+      "quote_key": "Q-K", "supplier": "SUP-G", "channel_name": "模拟店铺 G",
+      "currency": "CNY", "price_basis": "TAX_INCLUDED_DELIVERED", "shipping_minor": 100000,
+      "valid_from": "2026-11-01T00:00:00+08:00", "valid_until": "2026-11-20T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": 730000, "tax_included": true, "available_quantity": 5}]
+    },
+    {
+      "quote_key": "Q-L", "supplier": "SUP-H", "channel_name": "模拟店铺 H",
+      "currency": "CNY", "price_basis": "TAX_INCLUDED_DELIVERED", "shipping_minor": 100000,
+      "valid_from": "2026-11-01T00:00:00+08:00", "valid_until": "2026-11-20T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": 700000, "tax_included": true, "available_quantity": 0}]
+    },
+    {
+      "quote_key": "Q-N", "supplier": "SUP-I", "channel_name": "模拟店铺 I",
+      "currency": "CNY", "price_basis": "TAX_INCLUDED_DELIVERED", "shipping_minor": 100000,
+      "valid_from": "2026-11-01T00:00:00+08:00", "valid_until": "2026-11-20T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": null, "tax_included": true, "available_quantity": 20}]
+    },
+    {
+      "quote_key": "Q-S", "supplier": "SUP-J", "channel_name": "模拟店铺 J",
+      "currency": "CNY", "price_basis": "TAX_INCLUDED_DELIVERED", "shipping_minor": 100000,
+      "valid_from": "2026-11-01T00:00:00+08:00", "valid_until": "2026-11-20T00:00:00+08:00",
+      "delivery_at": "2026-11-25T18:00:00+08:00", "warranty_months": 36,
+      "lines": [{"sku": "SIM-NB-DEV-32-1T", "unit_price_minor": 740000, "tax_included": true, "available_quantity": null}]
+    }
+  ]
+}

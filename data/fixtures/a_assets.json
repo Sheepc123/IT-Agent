@@ -1,0 +1,10 @@
+{
+  "source_name": "fx-a-assets",
+  "assets": [
+    {"asset_tag": "AST-0001", "serial_no": "SIM-SN-0001", "sku": "SIM-NB-DEV-32-1T", "status": "AVAILABLE", "department": "RD1", "location": "SH-HQ-3F", "assigned_to": null},
+    {"asset_tag": "AST-0002", "serial_no": "SIM-SN-0002", "sku": "SIM-NB-DEV-32-1T", "status": "AVAILABLE", "department": "RD1", "location": "SH-HQ-3F", "assigned_to": null},
+    {"asset_tag": "AST-0003", "serial_no": "SIM-SN-0003", "sku": "SIM-NB-DEV-32-1T", "status": "AVAILABLE", "department": "RD1", "location": "SH-HQ-3F", "assigned_to": null},
+    {"asset_tag": "AST-0004", "serial_no": "SIM-SN-0004", "sku": "SIM-NB-DEV-32-1T", "status": "IN_USE", "department": "RD1", "location": "SH-HQ-3F", "assigned_to": "U-REQ-01"},
+    {"asset_tag": "AST-0005", "serial_no": "SIM-SN-0005", "sku": "SIM-NB-DEV-32-1T", "status": "IN_USE", "department": "RD1", "location": "SH-HQ-3F", "assigned_to": "U-ITAM-01"}
+  ]
+}

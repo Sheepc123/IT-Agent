@@ -1,0 +1,56 @@
+{
+  "version": "1",
+  "tenant": "demo",
+  "clock": "2026-11-12T12:00:00+08:00",
+  "captured_at": "2026-11-12T09:00:00+08:00",
+  "sets": {
+    "FX-A-BASE": {
+      "parts": ["org", "a_catalog", "a_assets", "a_quotes"],
+      "request": {
+        "business_type": "A",
+        "requester": "U-REQ-01",
+        "purpose": "开发席位",
+        "category": "LAPTOP",
+        "quantity": 10,
+        "template_key": "DEV-32-1T",
+        "minimum_specs": {"memory_gib": 32, "storage_bytes": 1000000000000},
+        "budget_minor": 6000000,
+        "required_by": "2026-12-01T18:00:00+08:00",
+        "destination": "SH-HQ-3F"
+      },
+      "expect": {
+        "available_assets": 3,
+        "quantity": 7,
+        "quote_totals": {"Q-A": 5350000, "Q-C": 5510000, "Q-B": 5120000}
+      }
+    },
+    "FX-A-BUYONLY": {
+      "parts": ["org", "a_catalog", "a_quotes"],
+      "request": {
+        "business_type": "A",
+        "requester": "U-REQ-01",
+        "purpose": "开发席位",
+        "category": "LAPTOP",
+        "quantity": 7,
+        "template_key": "DEV-32-1T",
+        "minimum_specs": {"memory_gib": 32, "storage_bytes": 1000000000000},
+        "budget_minor": 6000000,
+        "required_by": "2026-12-01T18:00:00+08:00",
+        "destination": "SH-HQ-3F"
+      },
+      "expect": {
+        "available_assets": 0,
+        "quantity": 7,
+        "quote_totals": {"Q-A": 5350000, "Q-C": 5510000, "Q-B": 5120000}
+      }
+    },
+    "FX-A-QUOTEVAR": {
+      "parts": ["org", "a_catalog", "a_assets", "a_quotes", "a_quotes_var"],
+      "expect": {
+        "available_assets": 3,
+        "quantity": 7,
+        "quote_totals": {"Q-A": 5350000, "Q-C": 5510000, "Q-B": 5120000, "Q-D": 4950000}
+      }
+    }
+  }
+}

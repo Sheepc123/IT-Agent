@@ -32,19 +32,6 @@ from it_procurement_api.db.models import (
 T0 = datetime(2026, 11, 12, 12, 0, tzinfo=timezone(timedelta(hours=8)))
 
 
-@pytest.fixture
-def session():
-    connection = get_engine().connect()
-    outer = connection.begin()
-    s = Session(connection, join_transaction_mode="create_savepoint")
-    try:
-        yield s
-    finally:
-        s.close()
-        outer.rollback()
-        connection.close()
-
-
 def rejected(session: Session, *rows, exc=IntegrityError) -> None:
     """The rows must be refused by the database; the session stays usable."""
     with pytest.raises(exc):
