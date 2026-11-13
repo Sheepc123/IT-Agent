@@ -5,14 +5,14 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
-# repo/services/api/src/it_procurement_api/settings.py -> repo
-_REPO_ROOT = Path(__file__).resolve().parents[4]
+# repo/backend/src/it_procurement_api/settings.py -> repo
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
     """Local development settings. Environment variables override infra/.env."""
 
-    model_config = SettingsConfigDict(env_file=_REPO_ROOT / "infra" / ".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=REPO_ROOT / "infra" / ".env", extra="ignore")
 
     postgres_host: str = "127.0.0.1"
     postgres_port: int = 5433  # host port published by infra/compose.yaml

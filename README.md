@@ -8,20 +8,48 @@
 
 P01 已完成业务需求、角色权限与 32 个验收故事的文档基线；P02 已完成领域模型、状态机和接口契约的设计基线及文档一致性检查；P03 已完成 40 条种子评测规格（仅规格：未经第二人复核，尚无判定器或运行结果）。P04 已建立本地 PostgreSQL、首批 16 张表的迁移和健康检查接口。P05 进行中：首批合成 fixture 与加载器已写。业务功能、数据中台、RAG 和评测仍待实现。
 
+## 目录结构
+
+```text
+Agent/
+├── backend/                    后端服务（Python、FastAPI、uv）
+│   ├── src/it_procurement_api/
+│   │   ├── app.py              API 入口与健康检查
+│   │   ├── settings.py         配置，读取 infra/.env
+│   │   ├── fixtures.py         合成数据的质量检查与加载
+│   │   └── db/                 数据库引擎、会话与表模型
+│   ├── tests/                  约束、健康检查与 fixture 测试
+│   ├── alembic.ini             迁移工具配置，指向 database/migrations
+│   └── pyproject.toml、uv.lock  依赖声明与锁定
+├── frontend/                   前端工作台（Next.js、TypeScript、pnpm）
+├── database/
+│   ├── migrations/             Alembic 迁移脚本，versions/ 下按编号排列
+│   └── fixtures/               合成演示数据（JSON），全部为 synthetic
+├── infra/                      本地依赖：compose.yaml；.env 不入库
+├── docs/                       需求、设计、计划与评测规格（不入库）
+├── scripts/                    变更日志与辅助脚本（不入库）
+├── RAG-docs/                   厂商官方原文资料（不入库）
+├── AGENTS.md                   项目协作约定
+└── README.md
+```
+
+迁移脚本放在 `database/`，但依赖后端的表模型，所以迁移命令在 `backend/` 下执行。评测、数据分层、知识接入等目录在对应任务开始时再建，不提前放空目录。
+
 ## 本地运行
 
 需要 Docker、uv。数据库配置在 `infra/.env`（不入库）。
 
 ```bash
 cd infra && docker compose up -d                 # 启动 PostgreSQL，端口 127.0.0.1:5433
-cd ../services/api
+cd ../backend
+uv sync                                          # 首次或移动目录后，建立虚拟环境
 uv run alembic upgrade head                      # 应用迁移
 uv run pytest -q                                 # 约束、健康检查与 fixture 测试
 uv run python -m it_procurement_api.fixtures FX-A-BASE   # 加载合成演示数据（会清空演示租户）
 uv run it-procurement-api                        # 启动 API，/api/v1/health/ready
 ```
 
-当前 `.gitignore` 忽略 `docs/` 和 `scripts/`，其中需求文档与日志为本地交付，尚未纳入 Git 跟踪。
+当前 `.gitignore` 忽略 `docs/`、`scripts/` 和 `RAG-docs/`，其中需求文档与日志为本地交付，未纳入 Git 跟踪。
 
 首版采购推荐已确定：输入需求后从维护好的目录推荐型号和模拟店铺/报价；技术依据来自经核对的真实厂商资料。普通表单不调用生成模型，自然语言每次提交最多一次解析，复杂问题再按预算调查。该方案已写入文档，尚未实现，不接实时电商或自主网页购物。
 

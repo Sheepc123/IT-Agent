@@ -12,7 +12,6 @@ import uuid
 from collections import Counter
 from datetime import datetime
 from hashlib import sha256
-from pathlib import Path
 
 from sqlalchemy import delete, select, text, update
 from sqlalchemy.orm import Session
@@ -32,8 +31,9 @@ from .db.models import (
     SourceBatch,
     Supplier,
 )
+from .settings import REPO_ROOT
 
-FIXTURES_DIR = Path(__file__).resolve().parents[4] / "data" / "fixtures"
+FIXTURES_DIR = REPO_ROOT / "database" / "fixtures"
 NAMESPACE = uuid.UUID("6f0e1c1e-5a0b-4a52-9d0c-3b8a5c2e7f10")
 IMPORTER = "SVC-IMPORT"
 
