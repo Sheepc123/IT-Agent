@@ -93,7 +93,7 @@ def test_database_is_at_migration_head():
         tables = set(inspect(connection).get_table_names())
     assert current == head
     assert set(Base.metadata.tables) <= tables
-    assert len(Base.metadata.tables) == 16
+    assert len(Base.metadata.tables) == 17
 
 
 def test_valid_rows_are_accepted(session):

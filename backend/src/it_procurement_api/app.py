@@ -4,8 +4,12 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from .db import get_engine
+from .errors import ApiError, handle_api_error
+from .requests_api import router as requests_router
 
 app = FastAPI(title="IT Procurement API", version="0.1.0")
+app.add_exception_handler(ApiError, handle_api_error)
+app.include_router(requests_router)
 
 
 @app.get("/api/v1/health/live")

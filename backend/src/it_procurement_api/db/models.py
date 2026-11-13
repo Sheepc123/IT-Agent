@@ -514,3 +514,41 @@ class BusinessEvent(Row, Base):
     occurred_at: Mapped[datetime] = _ts()
     payload: Mapped[dict] = _json()
     correlation_id: Mapped[uuid.UUID] = _uuid()
+
+
+# --- runs ---------------------------------------------------------------------
+
+
+class TaskRun(Row, Mutable, Base):
+    """One analysis run. SUCCEEDED means the analysis finished, not that anything was bought.
+
+    Only the fields the deterministic analysis needs; budgets, leases and
+    checkpoints arrive with the agent slice.
+    """
+
+    __tablename__ = "task_run"
+    __table_args__ = (
+        tenant_key(),
+        fk("request_id", "purchase_request"),
+        fk("request_revision_id", "request_revision"),
+        fk("actor_id", "principal"),
+        one_of("mode", "WORKFLOW", "FIXED_RAG", "AGENT"),
+        one_of("input_kind", "FORM", "NATURAL_LANGUAGE"),
+        one_of(
+            "status", "QUEUED", "RUNNING", "WAITING_INPUT", "SUCCEEDED", "BUDGET_EXHAUSTED", "CANCELLED", "FAILED"
+        ),
+        non_negative("model_call_count"),
+        non_negative("call_count"),
+    )
+
+    request_id: Mapped[uuid.UUID] = _uuid()
+    request_revision_id: Mapped[uuid.UUID] = _uuid()
+    actor_id: Mapped[uuid.UUID] = _uuid()
+    mode: Mapped[str] = mapped_column(Text, nullable=False)
+    input_kind: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    model_call_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    call_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("0"))
+    started_at: Mapped[datetime] = _ts()
+    finished_at: Mapped[datetime | None] = _ts(nullable=True)
+    result_snapshot: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
