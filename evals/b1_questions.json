@@ -1,0 +1,175 @@
+{
+  "version": "1",
+  "note": "业务 B 第一批调查题。expected 取自解析片段的检索结果，不是实机验证，也未经领域人员复核。status=CHECKED_AGAINST_CHUNKS 表示 probes 已与入库片段核对过；PENDING 表示预期尚未确定，probes 只用于观察。本文件不得进入检索库或模型上下文。",
+  "questions": [
+    {
+      "id": "B1-NET-01",
+      "task": "T2",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "ThinkSystem Intel XXV710-DA2 网卡要接到 NE2572 交换机，两端能否都使用 25G SR 光模块 7G17A03537？",
+      "expected": [
+        {"constraint": "交换机端支持光模块 7G17A03537", "result": "PASS"},
+        {"constraint": "网卡端支持光模块 7G17A03537", "result": "INSUFFICIENT"}
+      ],
+      "evidence": [
+        {"document_key": "LP0608_NE2572_Product_Guide", "page": 11},
+        {"document_key": "LP0608_NE2572_Product_Guide", "page": 13},
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 2}
+      ],
+      "probes": [
+        {"term": "7G17A03537", "document_key": "LP0608_NE2572_Product_Guide", "expect": "hit", "pages": [11, 13]},
+        {"term": "7G17A03537", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "miss"},
+        {"term": "4TC7A88638", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [2]},
+        {"term": "4TC7A88638", "document_key": "LP0608_NE2572_Product_Guide", "expect": "miss"}
+      ],
+      "notes": "网卡指南第 2 页经用户对照 PDF 原文；7G17A03537 在网卡指南 PDF 中全文搜索无结果。未列入不等于不兼容，所以网卡端是证据不足而不是不通过。两种不同料号的光模块能否互通，两份指南都未陈述。"
+    },
+    {
+      "id": "B1-NET-02",
+      "task": "T2",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "XXV710-DA2 网卡和 NE2572 交换机之间，能否用 1 米无源 DAC 线缆 7Z57A03557 直连？",
+      "expected": [
+        {"constraint": "网卡端支持线缆 7Z57A03557", "result": "PASS"},
+        {"constraint": "交换机端支持线缆 7Z57A03557", "result": "PASS"}
+      ],
+      "evidence": [
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 4},
+        {"document_key": "LP0608_NE2572_Product_Guide", "page": 11}
+      ],
+      "probes": [
+        {"term": "7Z57A03557", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [4]},
+        {"term": "7Z57A03557", "document_key": "LP0608_NE2572_Product_Guide", "expect": "hit", "pages": [11]}
+      ],
+      "notes": "两页均来自解析片段，未对照原文；表格脚注与固件条件未检查。"
+    },
+    {
+      "id": "B1-NET-03",
+      "task": "T2",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "XXV710-DA2 网卡的产品指南里有没有列出 NE2572 交换机？",
+      "expected": [
+        {"constraint": "网卡指南列有 NE2572 交换机（料号 7159E1X）", "result": "PASS"}
+      ],
+      "evidence": [
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 15}
+      ],
+      "probes": [
+        {"term": "NE2572", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [15]},
+        {"term": "7159E1X", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [15]}
+      ],
+      "notes": "只确认了该行出现在第 15 页；所在表格的标题与含义（受支持还是相关产品）未核对。"
+    },
+    {
+      "id": "B1-NET-04",
+      "task": "T2",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "XXV710-DA2 网卡指南列出的 3 米有源光缆 4X97A94008，NE2572 交换机是否也支持？",
+      "expected": [
+        {"constraint": "网卡端支持有源光缆 4X97A94008", "result": "PASS"},
+        {"constraint": "交换机端支持有源光缆 4X97A94008", "result": "INSUFFICIENT"}
+      ],
+      "evidence": [
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 3}
+      ],
+      "probes": [
+        {"term": "4X97A94008", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [3]},
+        {"term": "4X97A94008", "document_key": "LP0608_NE2572_Product_Guide", "expect": "miss"}
+      ],
+      "notes": "2026-11-15 探针结果：交换机指南的解析片段中没有该料号。未列入不等于不兼容，所以是证据不足。两页均未对照原文。"
+    },
+    {
+      "id": "B1-NET-05",
+      "task": "T2",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "一块 XXV710-DA2 网卡要直连一台 NE2572 交换机，速率 25G。光模块和无源 DAC 线缆两种连接方式，哪一种在两份产品指南里都有依据？",
+      "expected": [
+        {"constraint": "存在同一个 25G 光模块料号，同时被网卡指南和交换机指南列出", "result": "FAIL"},
+        {"constraint": "存在同一个 25G 无源 DAC 线缆料号，同时被网卡指南和交换机指南列出", "result": "PASS"}
+      ],
+      "evidence": [
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 2},
+        {"document_key": "LP0785_XXV710_DA2_Product_Guide", "page": 4},
+        {"document_key": "LP0608_NE2572_Product_Guide", "page": 11}
+      ],
+      "probes": [
+        {"term": "4TC7A88638", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [2]},
+        {"term": "4TC7A88638", "document_key": "LP0608_NE2572_Product_Guide", "expect": "miss"},
+        {"term": "7Z57A03557", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [4]},
+        {"term": "7Z57A03557", "document_key": "LP0608_NE2572_Product_Guide", "expect": "hit", "pages": [11]}
+      ],
+      "notes": "开放题：问题里不给料号，要先查出各自列了什么再比对。C1 的依据是网卡指南第 2 页的 25G 光模块只有 4TC7A88638（该页经用户对照原文），而它不在交换机指南的解析片段中；交换机指南的光模块清单没有逐页核对，若它在别处列了 4TC7A88638 而解析没取到，C1 的预期就是错的。C1 是关于文档内容的事实判断，所以用 FAIL 而不是 INSUFFICIENT；模型若答 INSUFFICIENT 会被判错，这一点有争议。"
+    },
+    {
+      "id": "B1-NET-06",
+      "task": "T2",
+      "status": "PENDING",
+      "question": "XXV710-DA2 网卡指南列出的 3 米 25G 无源 DAC 线缆，NE2572 交换机指南是否也列出？",
+      "expected": [],
+      "evidence": [],
+      "probes": [
+        {"term": "7Z57A03558", "document_key": "LP0785_XXV710_DA2_Product_Guide", "expect": "hit", "pages": [4]},
+        {"term": "7Z57A03558", "document_key": "LP0608_NE2572_Product_Guide", "expect": null}
+      ],
+      "notes": "交换机端结果待 probe 观察后填写预期。"
+    },
+    {
+      "id": "B1-GPU-01",
+      "task": "T1",
+      "status": "PENDING",
+      "question": "ThinkSystem SR675 V3 是否支持 NVIDIA H100 PCIe 显卡？",
+      "expected": [],
+      "evidence": [],
+      "probes": [
+        {"term": "H100", "document_key": "LP1611_SR675_V3_Product_Guide", "expect": null},
+        {"term": "SR675 V3", "document_key": "LP1732_H100_PCIe_Product_Guide", "expect": null}
+      ],
+      "notes": "2026-11-15 探针结果：H100 指南第 13、22 页出现 SR675 V3；SR675 V3 指南的解析片段中 H100 零命中。零命中的原因未查明（指南可能确实未列，也可能是解析没有取到），在查明前不填预期。"
+    },
+    {
+      "id": "B1-GPU-02",
+      "task": "T1",
+      "status": "CHECKED_AGAINST_CHUNKS",
+      "question": "NVIDIA R620 数据中心驱动的发行说明是否提到 H100？",
+      "expected": [
+        {"constraint": "R620 发行说明中出现 H100", "result": "PASS"}
+      ],
+      "evidence": [
+        {"document_key": "NVIDIA_Data_Center_GPU_Driver_Release_Notes_620_v1.0", "page": 6},
+        {"document_key": "NVIDIA_Data_Center_GPU_Driver_Release_Notes_620_v1.0", "page": 12},
+        {"document_key": "NVIDIA_Data_Center_GPU_Driver_Release_Notes_620_v1.0", "page": 13}
+      ],
+      "probes": [
+        {"term": "H100", "document_key": "NVIDIA_Data_Center_GPU_Driver_Release_Notes_620_v1.0", "expect": "hit", "pages": [6, 12, 13]}
+      ],
+      "notes": "只确认了 H100 出现在这三页；它是出现在支持列表、修复项还是已知问题里，没有查看。这道题只考“是否出现”，区分度低。"
+    },
+    {
+      "id": "B1-STO-01",
+      "task": "T3",
+      "status": "PENDING",
+      "question": "5400 PRO 960GB SATA SSD（料号 4XB7A82260）能否装入 ThinkSystem SR650 V3？",
+      "expected": [],
+      "evidence": [],
+      "probes": [
+        {"term": "4XB7A82260", "document_key": "LP1634_5400_PRO_SSD_Product_Guide", "expect": null},
+        {"term": "SR650 V3", "document_key": "LP1634_5400_PRO_SSD_Product_Guide", "expect": null},
+        {"term": "4XB7A82260", "document_key": "LP1601_SR650_V3_Product_Guide", "expect": null},
+        {"term": "4XB7A82260", "document_key": "SR650_V3_System_Configuration_Guide", "expect": null}
+      ],
+      "notes": "资料说明称 SSD 指南的服务器支持表列有 SR650 V3。2026-11-15 探针结果：料号 4XB7A82260 在 SSD 指南、SR650 V3 指南和配置手册的解析片段中全部零命中，SR650 V3 在 SSD 指南中也零命中。原因未查明：料号可能写错，也可能是解析没有取到（例如竖排表头）。资料说明的这一条目前没有片段支持，查明前不填预期。2026-11-15 追加检索：SSD 指南中 960GB 一行的料号是 4XB7A82288（M.2 5400 PRO 960GB），不是 4XB7A82260；第 7 页的服务器支持矩阵只抽出了 Y/N，列头的服务器型号没有出现在片段里（在该指南内检索 SR650 无结果），因此无法从片段判断哪一列是 SR650 V3。本题在解析能取到列头之前无法作答。"
+    },
+    {
+      "id": "B1-STO-02",
+      "task": "T3",
+      "status": "PENDING",
+      "question": "ThinkSystem 内存汇总文档中是否列出了 SR650 V3 支持的内存？",
+      "expected": [],
+      "evidence": [],
+      "probes": [
+        {"term": "SR650 V3", "document_key": "LP1021_ThinkSystem_Memory_Summary", "expect": null}
+      ],
+      "notes": "2026-11-15 探针结果：SR650 V3 在内存汇总的解析片段中零命中，原因未查明，查明前不填预期。"
+    }
+  ]
+}

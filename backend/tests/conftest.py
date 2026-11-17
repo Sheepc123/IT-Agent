@@ -5,6 +5,13 @@ from sqlalchemy.orm import Session
 from it_procurement_api.app import app
 from it_procurement_api.db import get_engine
 from it_procurement_api.identity import get_session
+from sample_docs import add_sample_docs
+
+
+@pytest.fixture
+def docs(session):
+    """Two made-up vendor guides in the rolled-back session (see sample_docs.py)."""
+    add_sample_docs(session)
 
 
 @pytest.fixture

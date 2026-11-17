@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     postgres_db: str
     api_host: str = "127.0.0.1"
     api_port: int = 8000
+    # Model access. Without a key the model path stays closed.
+    deepseek_api_key: SecretStr | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-chat"
 
     @property
     def database_url(self) -> URL:

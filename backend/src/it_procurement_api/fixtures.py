@@ -36,6 +36,8 @@ from .settings import REPO_ROOT
 FIXTURES_DIR = REPO_ROOT / "database" / "fixtures"
 NAMESPACE = uuid.UUID("6f0e1c1e-5a0b-4a52-9d0c-3b8a5c2e7f10")
 IMPORTER = "SVC-IMPORT"
+# Parsed vendor documents are real source material, not fixtures: a fixture reset keeps them.
+NOT_FIXTURE_TABLES = frozenset({"document_version", "document_chunk"})
 
 
 class FixtureError(ValueError):
@@ -159,6 +161,8 @@ def reset_tenant(session: Session) -> None:
     )
     session.execute(text("ALTER TABLE business_event DISABLE TRIGGER business_event_no_update_delete"))
     for table in reversed(Base.metadata.sorted_tables):
+        if table.name in NOT_FIXTURE_TABLES:
+            continue
         session.execute(delete(table).where(table.c.tenant_id == TENANT_ID))
     session.execute(text("ALTER TABLE business_event ENABLE TRIGGER business_event_no_update_delete"))
 

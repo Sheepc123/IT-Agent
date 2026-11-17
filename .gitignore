@@ -8,3 +8,5 @@ node_modules/
 /docs
 /scripts
 /RAG-docs
+/data/raw
+/data/processed

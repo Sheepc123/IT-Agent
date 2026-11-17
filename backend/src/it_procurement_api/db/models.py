@@ -552,3 +552,54 @@ class TaskRun(Row, Mutable, Base):
     started_at: Mapped[datetime] = _ts()
     finished_at: Mapped[datetime | None] = _ts(nullable=True)
     result_snapshot: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+
+
+# --- technical documents --------------------------------------------------------
+
+
+class DocumentVersion(Row, Mutable, Base):
+    """One captured file of a vendor document. The file stays on disk; this is the index.
+
+    Access control per document is not implemented yet.
+    """
+
+    __tablename__ = "document_version"
+    __table_args__ = (
+        tenant_key(),
+        UniqueConstraint("tenant_id", "document_key", "revision", "content_hash"),
+        one_of("status", "ACTIVE", "WITHDRAWN"),
+    )
+
+    document_key: Mapped[str] = mapped_column(Text, nullable=False)
+    revision: Mapped[str] = mapped_column(Text, nullable=False)
+    source_uri: Mapped[str] = mapped_column(Text, nullable=False)
+    object_uri: Mapped[str] = mapped_column(Text, nullable=False)  # path under data/raw/manuals/
+    content_hash: Mapped[str] = mapped_column(Text, nullable=False)  # sha256 of the file
+    published_at: Mapped[datetime | None] = _ts(nullable=True)
+    captured_at: Mapped[datetime] = _ts()
+    applicable_models: Mapped[list] = mapped_column(JSONB, nullable=False, server_default=text("'[]'::jsonb"))
+    doc_kind: Mapped[str] = mapped_column(Text, nullable=False)
+    page_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    extraction_version: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False, server_default=text("'ACTIVE'"))
+
+
+class DocumentChunk(Row, Base):
+    """Extracted text of one page, or one table on a page. Evidence is quoted from here."""
+
+    __tablename__ = "document_chunk"
+    __table_args__ = (
+        tenant_key(),
+        fk("document_version_id", "document_version"),
+        UniqueConstraint("tenant_id", "document_version_id", "page_no", "ordinal"),
+        one_of("kind", "TEXT", "TABLE"),
+        CheckConstraint("page_no >= 1", name="page_positive"),
+    )
+
+    document_version_id: Mapped[uuid.UUID] = _uuid()
+    page_no: Mapped[int] = mapped_column(Integer, nullable=False)
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False)  # 0 = page text, 1.. = tables
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    table_header: Mapped[list | None] = mapped_column(JSONB, nullable=True)
+    content_hash: Mapped[str] = mapped_column(Text, nullable=False)

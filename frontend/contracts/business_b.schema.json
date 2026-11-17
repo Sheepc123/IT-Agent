@@ -1,0 +1,2136 @@
+{
+  "models": {
+    "AnswerInput": {
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Answer",
+          "type": "string"
+        },
+        "question_id": {
+          "format": "uuid",
+          "title": "Question Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question_id",
+        "answer"
+      ],
+      "title": "AnswerInput",
+      "type": "object"
+    },
+    "AuthorizedToolCall": {
+      "additionalProperties": false,
+      "description": "A model suggestion after the server assigns an ID and tool version.",
+      "properties": {
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        },
+        "logical_call_id": {
+          "format": "uuid",
+          "title": "Logical Call Id",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "tool_name": {
+          "minLength": 1,
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "tool_version": {
+          "minLength": 1,
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "logical_call_id",
+        "run_id",
+        "tool_name",
+        "tool_version",
+        "arguments"
+      ],
+      "title": "AuthorizedToolCall",
+      "type": "object"
+    },
+    "BudgetCall": {
+      "$defs": {
+        "ActualUsage": {
+          "additionalProperties": false,
+          "properties": {
+            "cost_minor": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cost Minor"
+            },
+            "input_tokens": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Input Tokens"
+            },
+            "output_tokens": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Output Tokens"
+            }
+          },
+          "title": "ActualUsage",
+          "type": "object"
+        },
+        "BudgetReservation": {
+          "additionalProperties": false,
+          "properties": {
+            "max_cost_minor": {
+              "minimum": 0,
+              "title": "Max Cost Minor",
+              "type": "integer"
+            },
+            "max_input_tokens": {
+              "minimum": 0,
+              "title": "Max Input Tokens",
+              "type": "integer"
+            },
+            "max_output_tokens": {
+              "minimum": 0,
+              "title": "Max Output Tokens",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "max_input_tokens",
+            "max_output_tokens",
+            "max_cost_minor"
+          ],
+          "title": "BudgetReservation",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "actual_usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActualUsage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "budget_id": {
+          "format": "uuid",
+          "title": "Budget Id",
+          "type": "string"
+        },
+        "logical_call_id": {
+          "format": "uuid",
+          "title": "Logical Call Id",
+          "type": "string"
+        },
+        "reserved_max": {
+          "$ref": "#/$defs/BudgetReservation"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "RESERVED",
+            "SETTLED",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "logical_call_id",
+        "run_id",
+        "budget_id",
+        "reserved_max",
+        "status"
+      ],
+      "title": "BudgetCall",
+      "type": "object"
+    },
+    "CancelInput": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "title": "CancelInput",
+      "type": "object"
+    },
+    "ConfirmRequestInput": {
+      "$defs": {
+        "RequirementInput": {
+          "additionalProperties": false,
+          "properties": {
+            "is_hard": {
+              "default": false,
+              "title": "Is Hard",
+              "type": "boolean"
+            },
+            "key": {
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value"
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "title": "RequirementInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "confirmed_requirements": {
+          "items": {
+            "$ref": "#/$defs/RequirementInput"
+          },
+          "title": "Confirmed Requirements",
+          "type": "array"
+        },
+        "unknown_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "confirmed_requirements"
+      ],
+      "title": "ConfirmRequestInput",
+      "type": "object"
+    },
+    "EventPageView": {
+      "$defs": {
+        "RunEventView": {
+          "additionalProperties": false,
+          "properties": {
+            "event_type": {
+              "minLength": 1,
+              "title": "Event Type",
+              "type": "string"
+            },
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "sequence": {
+              "minimum": 1,
+              "title": "Sequence",
+              "type": "integer"
+            },
+            "summary": {
+              "minLength": 1,
+              "title": "Summary",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sequence",
+            "event_type",
+            "occurred_at",
+            "summary"
+          ],
+          "title": "RunEventView",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "events": {
+          "items": {
+            "$ref": "#/$defs/RunEventView"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "next_cursor": {
+          "minimum": 0,
+          "title": "Next Cursor",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "events",
+        "next_cursor"
+      ],
+      "title": "EventPageView",
+      "type": "object"
+    },
+    "Evidence": {
+      "$defs": {
+        "DisplayedRange": {
+          "additionalProperties": false,
+          "properties": {
+            "end": {
+              "exclusiveMinimum": 0,
+              "title": "End",
+              "type": "integer"
+            },
+            "start": {
+              "minimum": 0,
+              "title": "Start",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "title": "DisplayedRange",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A recorded, actually displayed document span; preview is not proof.",
+      "properties": {
+        "acl_scope_id": {
+          "format": "uuid",
+          "title": "Acl Scope Id",
+          "type": "string"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bbox"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "displayed_range": {
+          "$ref": "#/$defs/DisplayedRange"
+        },
+        "document_version_id": {
+          "format": "uuid",
+          "title": "Document Version Id",
+          "type": "string"
+        },
+        "evidence_id": {
+          "format": "uuid",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "is_preview": {
+          "default": false,
+          "title": "Is Preview",
+          "type": "boolean"
+        },
+        "knowledge_release_id": {
+          "minLength": 1,
+          "title": "Knowledge Release Id",
+          "type": "string"
+        },
+        "page_no": {
+          "minimum": 1,
+          "title": "Page No",
+          "type": "integer"
+        },
+        "read_at": {
+          "format": "date-time",
+          "title": "Read At",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "source_uri": {
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        },
+        "tenant_id": {
+          "format": "uuid",
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "run_id",
+        "tenant_id",
+        "acl_scope_id",
+        "knowledge_release_id",
+        "document_version_id",
+        "content_hash",
+        "page_no",
+        "displayed_range",
+        "source_uri",
+        "read_at"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "EvidenceView": {
+      "$defs": {
+        "DisplayedRange": {
+          "additionalProperties": false,
+          "properties": {
+            "end": {
+              "exclusiveMinimum": 0,
+              "title": "End",
+              "type": "integer"
+            },
+            "start": {
+              "minimum": 0,
+              "title": "Start",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "title": "DisplayedRange",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "displayed_range": {
+          "$ref": "#/$defs/DisplayedRange"
+        },
+        "document_title": {
+          "minLength": 1,
+          "title": "Document Title",
+          "type": "string"
+        },
+        "document_version_id": {
+          "format": "uuid",
+          "title": "Document Version Id",
+          "type": "string"
+        },
+        "evidence_id": {
+          "format": "uuid",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "page_no": {
+          "minimum": 1,
+          "title": "Page No",
+          "type": "integer"
+        },
+        "result_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Ref"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "document_version_id",
+        "document_title",
+        "page_no",
+        "displayed_range",
+        "content",
+        "content_hash"
+      ],
+      "title": "EvidenceView",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "applicability": {
+          "minLength": 1,
+          "title": "Applicability",
+          "type": "string"
+        },
+        "assumptions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "candidate_id": {
+          "format": "uuid",
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "constraint_id": {
+          "minLength": 1,
+          "title": "Constraint Id",
+          "type": "string"
+        },
+        "opposing_evidence": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Opposing Evidence",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INSUFFICIENT"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "review_status": {
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "VERIFIED",
+            "REJECTED"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "supporting_evidence": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Supporting Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "constraint_id",
+        "candidate_id",
+        "result",
+        "applicability",
+        "reason"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "Proposal": {
+      "$defs": {
+        "Finding": {
+          "additionalProperties": false,
+          "properties": {
+            "applicability": {
+              "minLength": 1,
+              "title": "Applicability",
+              "type": "string"
+            },
+            "assumptions": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Assumptions",
+              "type": "array"
+            },
+            "candidate_id": {
+              "format": "uuid",
+              "title": "Candidate Id",
+              "type": "string"
+            },
+            "constraint_id": {
+              "minLength": 1,
+              "title": "Constraint Id",
+              "type": "string"
+            },
+            "opposing_evidence": {
+              "default": [],
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": "Opposing Evidence",
+              "type": "array"
+            },
+            "reason": {
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "INSUFFICIENT"
+              ],
+              "title": "Result",
+              "type": "string"
+            },
+            "review_status": {
+              "default": "PENDING",
+              "enum": [
+                "PENDING",
+                "VERIFIED",
+                "REJECTED"
+              ],
+              "title": "Review Status",
+              "type": "string"
+            },
+            "supporting_evidence": {
+              "default": [],
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": "Supporting Evidence",
+              "type": "array"
+            }
+          },
+          "required": [
+            "constraint_id",
+            "candidate_id",
+            "result",
+            "applicability",
+            "reason"
+          ],
+          "title": "Finding",
+          "type": "object"
+        },
+        "ProposalCandidate": {
+          "additionalProperties": false,
+          "properties": {
+            "bom_ref": {
+              "minLength": 1,
+              "title": "Bom Ref",
+              "type": "string"
+            },
+            "candidate_id": {
+              "format": "uuid",
+              "title": "Candidate Id",
+              "type": "string"
+            },
+            "currency": {
+              "pattern": "^[A-Z]{3}$",
+              "title": "Currency",
+              "type": "string"
+            },
+            "findings": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Finding"
+              },
+              "title": "Findings",
+              "type": "array"
+            },
+            "quote_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote Ref"
+            },
+            "quote_valid_until": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote Valid Until"
+            },
+            "total_minor": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Total Minor"
+            }
+          },
+          "required": [
+            "candidate_id",
+            "bom_ref",
+            "currency"
+          ],
+          "title": "ProposalCandidate",
+          "type": "object"
+        },
+        "VersionPins": {
+          "additionalProperties": false,
+          "properties": {
+            "data_release_id": {
+              "minLength": 1,
+              "title": "Data Release Id",
+              "type": "string"
+            },
+            "knowledge_release_id": {
+              "minLength": 1,
+              "title": "Knowledge Release Id",
+              "type": "string"
+            },
+            "request_revision": {
+              "minimum": 1,
+              "title": "Request Revision",
+              "type": "integer"
+            },
+            "rule_version": {
+              "minLength": 1,
+              "title": "Rule Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "request_revision",
+            "data_release_id",
+            "knowledge_release_id",
+            "rule_version"
+          ],
+          "title": "VersionPins",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A versioned draft/formal payload, never an approval or computed price proof.",
+      "properties": {
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/ProposalCandidate"
+          },
+          "maxItems": 3,
+          "title": "Candidates",
+          "type": "array"
+        },
+        "completeness": {
+          "enum": [
+            "FULL",
+            "PARTIAL"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "selected_candidate_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Candidate Id"
+        },
+        "stage": {
+          "enum": [
+            "INVESTIGATION_DRAFT",
+            "FORMAL"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "versions": {
+          "$ref": "#/$defs/VersionPins"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "request_id",
+        "version",
+        "versions",
+        "stage",
+        "completeness",
+        "candidates"
+      ],
+      "title": "Proposal",
+      "type": "object"
+    },
+    "RequestDraftInput": {
+      "$defs": {
+        "RequirementInput": {
+          "additionalProperties": false,
+          "properties": {
+            "is_hard": {
+              "default": false,
+              "title": "Is Hard",
+              "type": "boolean"
+            },
+            "key": {
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value"
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "title": "RequirementInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 10000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "requirements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RequirementInput"
+          },
+          "title": "Requirements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "title": "RequestDraftInput",
+      "type": "object"
+    },
+    "RequestView": {
+      "$defs": {
+        "RequirementInput": {
+          "additionalProperties": false,
+          "properties": {
+            "is_hard": {
+              "default": false,
+              "title": "Is Hard",
+              "type": "boolean"
+            },
+            "key": {
+              "maxLength": 80,
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value"
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "title": "RequirementInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "confirmed_revision": {
+          "default": false,
+          "title": "Confirmed Revision",
+          "type": "boolean"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "missing_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Fields",
+          "type": "array"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "requirements": {
+          "items": {
+            "$ref": "#/$defs/RequirementInput"
+          },
+          "title": "Requirements",
+          "type": "array"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "row_version": {
+          "minimum": 1,
+          "title": "Row Version",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "DRAFT",
+            "SUBMITTED",
+            "FULFILLING",
+            "COMPLETED",
+            "CANCELLED"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "revision",
+        "row_version",
+        "status",
+        "description",
+        "requirements"
+      ],
+      "title": "RequestView",
+      "type": "object"
+    },
+    "RunAcceptedView": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "request_revision": {
+          "minimum": 1,
+          "title": "Request Revision",
+          "type": "integer"
+        },
+        "row_version": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Row Version",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "QUEUED",
+          "default": "QUEUED",
+          "title": "Status",
+          "type": "string"
+        },
+        "status_url": {
+          "minLength": 1,
+          "title": "Status Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "request_id",
+        "request_revision",
+        "status_url"
+      ],
+      "title": "RunAcceptedView",
+      "type": "object"
+    },
+    "RunContext": {
+      "$defs": {
+        "VersionPins": {
+          "additionalProperties": false,
+          "properties": {
+            "data_release_id": {
+              "minLength": 1,
+              "title": "Data Release Id",
+              "type": "string"
+            },
+            "knowledge_release_id": {
+              "minLength": 1,
+              "title": "Knowledge Release Id",
+              "type": "string"
+            },
+            "request_revision": {
+              "minimum": 1,
+              "title": "Request Revision",
+              "type": "integer"
+            },
+            "rule_version": {
+              "minLength": 1,
+              "title": "Rule Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "request_revision",
+            "data_release_id",
+            "knowledge_release_id",
+            "rule_version"
+          ],
+          "title": "VersionPins",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Server-created identity, scope, version and budget pins for one run.",
+      "properties": {
+        "budget_id": {
+          "format": "uuid",
+          "title": "Budget Id",
+          "type": "string"
+        },
+        "deadline_at": {
+          "format": "date-time",
+          "title": "Deadline At",
+          "type": "string"
+        },
+        "principal_id": {
+          "format": "uuid",
+          "title": "Principal Id",
+          "type": "string"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "scope_id": {
+          "format": "uuid",
+          "title": "Scope Id",
+          "type": "string"
+        },
+        "tenant_id": {
+          "format": "uuid",
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "versions": {
+          "$ref": "#/$defs/VersionPins"
+        }
+      },
+      "required": [
+        "run_id",
+        "tenant_id",
+        "principal_id",
+        "scope_id",
+        "request_id",
+        "versions",
+        "budget_id",
+        "deadline_at"
+      ],
+      "title": "RunContext",
+      "type": "object"
+    },
+    "RunView": {
+      "$defs": {
+        "PendingQuestionView": {
+          "additionalProperties": false,
+          "properties": {
+            "question": {
+              "minLength": 1,
+              "title": "Question",
+              "type": "string"
+            },
+            "question_id": {
+              "format": "uuid",
+              "title": "Question Id",
+              "type": "string"
+            },
+            "reason": {
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "question_id",
+            "question",
+            "reason"
+          ],
+          "title": "PendingQuestionView",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "end_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Reason"
+        },
+        "event_cursor": {
+          "minimum": 0,
+          "title": "Event Cursor",
+          "type": "integer"
+        },
+        "known_input_tokens": {
+          "minimum": 0,
+          "title": "Known Input Tokens",
+          "type": "integer"
+        },
+        "known_output_tokens": {
+          "minimum": 0,
+          "title": "Known Output Tokens",
+          "type": "integer"
+        },
+        "model_calls": {
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "pending_question": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PendingQuestionView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "request_revision": {
+          "minimum": 1,
+          "title": "Request Revision",
+          "type": "integer"
+        },
+        "result_completeness": {
+          "default": "NONE",
+          "enum": [
+            "NONE",
+            "PARTIAL",
+            "FULL"
+          ],
+          "title": "Result Completeness",
+          "type": "string"
+        },
+        "row_version": {
+          "minimum": 1,
+          "title": "Row Version",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "QUEUED",
+            "RUNNING",
+            "WAITING_INPUT",
+            "SUCCEEDED",
+            "FAILED",
+            "CANCELLED",
+            "BUDGET_EXHAUSTED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "tool_calls": {
+          "minimum": 0,
+          "title": "Tool Calls",
+          "type": "integer"
+        },
+        "unknown_usage_calls": {
+          "minimum": 0,
+          "title": "Unknown Usage Calls",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "run_id",
+        "request_id",
+        "request_revision",
+        "row_version",
+        "status",
+        "model_calls",
+        "tool_calls",
+        "known_input_tokens",
+        "known_output_tokens",
+        "unknown_usage_calls",
+        "event_cursor"
+      ],
+      "title": "RunView",
+      "type": "object"
+    },
+    "StartRunInput": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "default": "AGENT",
+          "enum": [
+            "WORKFLOW",
+            "FIXED_RAG",
+            "AGENT"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "request_revision": {
+          "minimum": 1,
+          "title": "Request Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "request_revision"
+      ],
+      "title": "StartRunInput",
+      "type": "object"
+    },
+    "ToolResult": {
+      "additionalProperties": false,
+      "properties": {
+        "data_as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data As Of"
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "logical_call_id": {
+          "format": "uuid",
+          "title": "Logical Call Id",
+          "type": "string"
+        },
+        "pending_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Pending Fields",
+          "type": "array"
+        },
+        "result_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Ref"
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "scope_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope Id"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "OK",
+            "INSUFFICIENT",
+            "ERROR"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "logical_call_id",
+        "status",
+        "summary"
+      ],
+      "title": "ToolResult",
+      "type": "object"
+    }
+  },
+  "schema_version": "p17-v1",
+  "tools": {
+    "ask_user": {
+      "authorization_action": "RUN_ASK",
+      "effect": "RUN_WRITE",
+      "idempotent": true,
+      "input_schema": {
+        "$defs": {
+          "QuestionDraft": {
+            "additionalProperties": false,
+            "properties": {
+              "question": {
+                "minLength": 1,
+                "title": "Question",
+                "type": "string"
+              },
+              "reason": {
+                "minLength": 1,
+                "title": "Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "question",
+              "reason"
+            ],
+            "title": "QuestionDraft",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "questions": {
+            "items": {
+              "$ref": "#/$defs/QuestionDraft"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Questions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "questions"
+        ],
+        "title": "AskUserInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 5,
+      "version": "1"
+    },
+    "build_bom": {
+      "authorization_action": "REQUEST_READ",
+      "effect": "COMPUTE",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 1,
+            "title": "Quantity",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "quantity"
+        ],
+        "title": "BuildBomInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 15,
+      "version": "1"
+    },
+    "check_constraints": {
+      "authorization_action": "REQUEST_READ",
+      "effect": "COMPUTE",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "fact_refs": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Fact Refs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "fact_refs"
+        ],
+        "title": "CheckConstraintsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 15,
+      "version": "1"
+    },
+    "estimate_resources": {
+      "authorization_action": "REQUEST_READ",
+      "effect": "COMPUTE",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "assumptions": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Assumptions",
+            "type": "array"
+          },
+          "workload_ref": {
+            "minLength": 1,
+            "title": "Workload Ref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workload_ref"
+        ],
+        "title": "EstimateResourcesInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    },
+    "get_quotes": {
+      "authorization_action": "QUOTE_READ",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "destination": {
+            "minLength": 1,
+            "title": "Destination",
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 1,
+            "title": "Quantity",
+            "type": "integer"
+          },
+          "required_by": {
+            "format": "date-time",
+            "title": "Required By",
+            "type": "string"
+          },
+          "sku_codes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Sku Codes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "sku_codes",
+          "quantity",
+          "destination",
+          "required_by"
+        ],
+        "title": "GetQuotesInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 15,
+      "version": "1"
+    },
+    "get_request_context": {
+      "authorization_action": "REQUEST_READ",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "title": "EmptyInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 5,
+      "version": "1"
+    },
+    "list_documents": {
+      "authorization_action": "DOCUMENT_LIST",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "document_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Document Kind"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Query"
+          }
+        },
+        "title": "ListDocumentsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    },
+    "query_relations": {
+      "authorization_action": "RELATION_QUERY",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "entity_ref": {
+            "minLength": 1,
+            "title": "Entity Ref",
+            "type": "string"
+          },
+          "max_depth": {
+            "default": 1,
+            "maximum": 2,
+            "minimum": 1,
+            "title": "Max Depth",
+            "type": "integer"
+          },
+          "relation_types": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "title": "Relation Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "entity_ref",
+          "relation_types"
+        ],
+        "title": "QueryRelationsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    },
+    "read_evidence": {
+      "authorization_action": "DOCUMENT_READ",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk_ref": {
+            "minLength": 1,
+            "title": "Chunk Ref",
+            "type": "string"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Region"
+          }
+        },
+        "required": [
+          "chunk_ref"
+        ],
+        "title": "ReadEvidenceInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 15,
+      "version": "1"
+    },
+    "search_assets": {
+      "authorization_action": "ASSET_SEARCH",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Category"
+          },
+          "filters": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "title": "Filters",
+            "type": "object"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "SearchAssetsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    },
+    "search_catalog": {
+      "authorization_action": "CATALOG_SEARCH",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "minLength": 1,
+            "title": "Category",
+            "type": "string"
+          },
+          "exact_sku": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Exact Sku"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "specifications": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "title": "Specifications",
+            "type": "object"
+          }
+        },
+        "required": [
+          "category"
+        ],
+        "title": "SearchCatalogInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    },
+    "search_documents": {
+      "authorization_action": "DOCUMENT_SEARCH",
+      "effect": "READ",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "document_version_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Document Version Ids",
+            "type": "array"
+          },
+          "limit": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "SearchDocumentsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 15,
+      "version": "1"
+    },
+    "solve_configurations": {
+      "authorization_action": "REQUEST_READ",
+      "effect": "COMPUTE",
+      "idempotent": true,
+      "input_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Candidate Ids",
+            "type": "array"
+          },
+          "objective": {
+            "enum": [
+              "MIN_TOTAL_COST",
+              "EARLIEST_DELIVERY"
+            ],
+            "title": "Objective",
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidate_ids",
+          "objective"
+        ],
+        "title": "SolveConfigurationsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 30,
+      "version": "1"
+    },
+    "submit_findings": {
+      "authorization_action": "RUN_SUBMIT_DRAFT",
+      "effect": "RUN_WRITE",
+      "idempotent": true,
+      "input_schema": {
+        "$defs": {
+          "FindingDraft": {
+            "additionalProperties": false,
+            "properties": {
+              "candidate_id": {
+                "format": "uuid",
+                "title": "Candidate Id",
+                "type": "string"
+              },
+              "constraint_id": {
+                "minLength": 1,
+                "title": "Constraint Id",
+                "type": "string"
+              },
+              "opposing_evidence": {
+                "default": [],
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "title": "Opposing Evidence",
+                "type": "array"
+              },
+              "reason": {
+                "minLength": 1,
+                "title": "Reason",
+                "type": "string"
+              },
+              "result": {
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "INSUFFICIENT"
+                ],
+                "title": "Result",
+                "type": "string"
+              },
+              "supporting_evidence": {
+                "default": [],
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "title": "Supporting Evidence",
+                "type": "array"
+              }
+            },
+            "required": [
+              "constraint_id",
+              "candidate_id",
+              "result",
+              "reason"
+            ],
+            "title": "FindingDraft",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "findings": {
+            "items": {
+              "$ref": "#/$defs/FindingDraft"
+            },
+            "minItems": 1,
+            "title": "Findings",
+            "type": "array"
+          },
+          "summary": {
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "findings",
+          "summary"
+        ],
+        "title": "SubmitFindingsInput",
+        "type": "object"
+      },
+      "output_schema_ref": "ToolResult",
+      "timeout_seconds": 10,
+      "version": "1"
+    }
+  }
+}
