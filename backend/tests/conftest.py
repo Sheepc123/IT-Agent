@@ -1,11 +1,15 @@
 import pytest
+import os
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from it_procurement_api.app import app
 from it_procurement_api.db import get_engine
-from it_procurement_api.identity import get_session
+from it_procurement_api.auth.identity import get_session
 from sample_docs import add_sample_docs
+
+# Test-only opt-in: demo principal headers are disabled by default.
+os.environ["IT_PROCUREMENT_DEMO_IDENTITY"] = "1"
 
 
 @pytest.fixture

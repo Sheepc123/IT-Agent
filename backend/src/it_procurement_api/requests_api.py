@@ -32,7 +32,7 @@ from .db.models import (
     TaskRun,
 )
 from .errors import ApiError, not_found
-from .identity import Actor, current_actor, get_session
+from .auth.identity import Actor, current_actor, get_session
 from .schemas import RequestDraft, iso, missing_fields
 
 router = APIRouter(prefix="/api/v1")
@@ -46,6 +46,7 @@ def envelope(data: dict, status: int = 200) -> JSONResponse:
 
 
 def record_event(session: Session, actor: Actor, request: PurchaseRequest, event_type: str, payload: dict) -> None:
+    
     """State changes and their event are written in the same transaction."""
     count = session.scalar(
         select(func.count()).select_from(BusinessEvent).where(

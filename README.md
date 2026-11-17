@@ -8,7 +8,7 @@
 
 已有本地前后端基础、PostgreSQL 迁移、A 确定性分析、PDF 解析/词项检索、B 的 LangGraph 内存循环及局部评测工具。现有基础词项 RAG 不等于目标混合 RAG；DSPy 尚未接入。Agent 模型契约、工具目录与旧运行器已完成第一批结构拆分；业务 B 核心数据与前后端最小载荷已有 `p17-v1` JSON Schema。业务 B 路由、业务图和持久化仍未实现。CHG-0029 记录了 9 份指南重建和 107 项测试通过，这是历史验证，不能视为生产架构已完成。
 
-当前目标为生产级业务 B 系统：LangGraph＋Temporal、PostgreSQL＋Milvus＋对象存储、权限/预算/恢复/审计、混合及多模态取证。上述组件组合和 HA 尚未落地验收。最新需求、架构与工作流见下方三个主入口；下一项是 P17 契约细化。
+当前目标为生产级业务 B 系统：LangGraph＋Temporal、PostgreSQL＋Milvus＋对象存储、权限/预算/恢复/审计、混合及多模态取证。上述组件组合和 HA 尚未落地验收。最新需求、架构与工作流见下方三个主入口；CHG-0038 已确认完整 A/B 前端及文档/证据关系图设计；CHG-0046 已将 `/login` 与 `/dashboard` 接入本地数据库应用账号、可撤销会话和后端只读需求数据；其余页面逐页建设，P17/P18 契约和服务继续接入。
 
 ## 目录结构
 
@@ -17,6 +17,7 @@ Agent/
 ├── backend/                    后端服务（Python、FastAPI、uv）
 │   ├── src/it_procurement_api/
 │   │   ├── app.py              API 入口与健康检查
+│   │   ├── auth/               身份解析、本地登录、密码处理和开发账号初始化
 │   │   ├── agent/              B 原型：模型契约、工具目录和 LangGraph 运行器
 │   │   ├── business_b/         B 核心、API 与工具输入 Schema 及导出器
 │   │   ├── model_client.py     DeepSeek 协议适配
@@ -55,14 +56,17 @@ uv sync                                          # 首次或移动目录后，�
 uv run python -m it_procurement_api.business_b.export_schema ../frontend/contracts/business_b.schema.json  # 同步 B 前端契约
 uv run alembic upgrade head                      # 应用迁移
 uv run pytest -q                                 # 约束、健康检查与 fixture 测试
-uv run python -m it_procurement_api.fixtures FX-A-BASE   # 加载合成演示数据（会清空演示租户）
+uv run python -m it_procurement_api.fixtures FX-A-BASE   # 加载合成演示数据（会清空演示租户，包括应用测试账号）
+DEV_TEST_PASSWORD='<本地测试密码>' uv run python -m it_procurement_api.auth.seed  # fixture 后创建 admin0 应用账号
 uv run python -m it_procurement_api.documents ingest      # 解析首批 9 份厂商指南入库（需 data/raw/manuals/）
 uv run python -m it_procurement_api.documents show LP0785_XXV710_DA2_Product_Guide 3   # 查看某页片段，对照原文抽查
 uv run python -m it_procurement_api.evidence search "XXV710-DA2 7Z57A03557"   # 加权检索，返回片段引用
 uv run python -m it_procurement_api.evidence read LP0785_XXV710_DA2_Product_Guide:p4:1   # 读取一个片段
 uv run python -m it_procurement_api.evidence probe         # 用入库文档核对 evals/b1_questions.json
-uv run it-procurement-api                        # 启动 API，/api/v1/health/ready
+IT_PROCUREMENT_LOCAL_LOGIN=1 uv run uvicorn it_procurement_api.app:app --host 127.0.0.1 --port 8000  # 本地应用登录
 ```
+
+前端另开终端运行 `cd frontend && pnpm dev --hostname 127.0.0.1`，打开 `http://127.0.0.1:3000/login`。本地应用账号密码不同于 PostgreSQL 连接凭据；企业认证仍未接入。
 
 当前 `.gitignore` 忽略 `docs/`、`scripts/` 和 `data/raw/`，其中需求文档与日志为本地交付，未纳入 Git 跟踪。数据分工：`data/` 放厂商原文及其处理产物，`database/` 放迁移和合成演示数据。解析后的片段只存数据库；`data/processed/` 等有文件产物（如人工核对过的题目）时再建。
 
@@ -79,6 +83,7 @@ uv run it-procurement-api                        # 启动 API，/api/v1/health/r
 | [业务 B Agent 工作流](docs/业务B-Agent实施方案.md) | 调查循环、工具契约、预算、状态、停止/恢复和实施模块 |
 | [后端架构审计与重构顺序](docs/后端架构审计与重构顺序.md) | 原型耦合、LangGraph/RAG/DSPy 差距、目标模块和迁移验收 |
 | [P17 业务 B 契约与迁移映射](docs/P17-业务B契约与迁移映射.md) | B01～B12 的角色、`p17-v1` 数据/API Schema、函数迁移及未实现边界 |
+| [前端设计总览](<docs/frontend design/README.md>) | 已确认的 A/B 页面、角色、接口状态、原文与图谱可视化；当前仅设计 |
 | [项目计划大纲](docs/项目计划大纲.md) | 当前任务顺序、状态、依赖和下一步 |
 | [项目计划说明书](docs/项目计划说明书.md) | 交付方式、质量门槛、职责与文档分工 |
 | [共享业务规则](docs/业务需求规格说明书.md) | 保留 REQ-A/B/X/R/M 编号与业务不变量 |
@@ -98,4 +103,4 @@ uv run it-procurement-api                        # 启动 API，/api/v1/health/r
 
 ## 下一项任务
 
-P08 现未开始；可按 `p17-v1` 契约建设需求、任务与证据页面的替身，并在 P17/P18 的真实 B 接口、权限、版本和幂等事件具备后逐项接入。P09/P10 知识服务并行推进；审批/执行页随 P07 接入。详细进度以计划大纲为准。
+P08 已进入设计阶段，CHG-0038 的页面/API/可视化设计见[前端设计目录](<docs/frontend design/README.md>)；首个 `/dashboard` 工作台已接入只读身份、待办与需求接口，可按 [前端运行说明](frontend/README.md) 联调；其余页面等待用户逐页指定。当前使用显式启用的开发演示身份，生产认证、审核指派、版本和幂等事件仍归 P17/P18，P09/P10 补授权原文与证据。共享审批/执行页随 P07 接入；GraphRAG 真实检索另经 P20 评测。详细进度以计划大纲为准。

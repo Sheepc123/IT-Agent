@@ -169,6 +169,26 @@ class RoleGrant(Row, Mutable, Base):
     revoked_at: Mapped[datetime | None] = _ts(nullable=True)
 
 
+class LocalCredential(Row, Base):
+    """Development-only application password, never a PostgreSQL login role."""
+    __tablename__ = "local_credential"
+    __table_args__ = (tenant_key(), fk("principal_id", "principal"), UniqueConstraint("tenant_id", "principal_id"))
+
+    principal_id: Mapped[uuid.UUID] = _uuid()
+    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class LocalSession(Row, Base):
+    """Opaque application session; only the token digest is stored."""
+    __tablename__ = "local_session"
+    __table_args__ = (tenant_key(), fk("principal_id", "principal"), UniqueConstraint("token_hash"))
+
+    principal_id: Mapped[uuid.UUID] = _uuid()
+    token_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    expires_at: Mapped[datetime] = _ts()
+    revoked_at: Mapped[datetime | None] = _ts(nullable=True)
+
+
 # --- sources and master data --------------------------------------------------
 
 
